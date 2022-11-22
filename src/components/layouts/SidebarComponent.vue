@@ -1,7 +1,6 @@
 <template>
   <div class="leftside-menu">
 
-    <!-- LOGO -->
     <router-link to="/" class="logo text-center logo-light">
       <span class="logo-lg">
           <img src="@/assets/images/logo.png" alt="" height="16">
@@ -11,7 +10,6 @@
       </span>
     </router-link>
 
-    <!-- LOGO -->
     <a :href="'/'" class="logo text-center logo-dark">
       <span class="logo-lg">
           <img src="@/assets/images/logo-dark.png" alt="" height="16">
@@ -23,7 +21,6 @@
 
     <div class="h-100" id="leftside-menu-container" data-simplebar>
 
-      <!--- Sidemenu -->
       <ul class="side-nav">
 
         <li class="side-nav-title side-nav-item">Navigation</li>
@@ -638,7 +635,6 @@
         </li>
       </ul>
 
-      <!-- Help Box -->
       <div class="help-box help-box-light text-center">
         <a href="javascript: void(0);" class="float-end close-btn text-body">
           <i class="mdi mdi-close"></i>
@@ -648,13 +644,10 @@
         <p class="mb-3">Upgrade to plan to get access to unlimited reports</p>
         <a href="javascript: void(0);" class="btn btn-outline-primary btn-sm">Upgrade</a>
       </div>
-      <!-- end Help Box -->
-      <!-- End Sidebar -->
 
       <div class="clearfix"></div>
 
     </div>
-    <!-- Sidebar -left -->
 
   </div>
 </template>
