@@ -2,14 +2,14 @@
   <div class="leftside-menu">
 
     <!-- LOGO -->
-    <a :href="'/'" class="logo text-center logo-light">
+    <router-link to="/" class="logo text-center logo-light">
       <span class="logo-lg">
           <img src="@/assets/images/logo.png" alt="" height="16">
       </span>
       <span class="logo-sm">
           <img src="@/assets/images/logo_sm.png" alt="" height="16">
       </span>
-    </a>
+    </router-link>
 
     <!-- LOGO -->
     <a :href="'/'" class="logo text-center logo-dark">
@@ -29,20 +29,20 @@
         <li class="side-nav-title side-nav-item">Navigation</li>
 
         <li class="side-nav-item">
-          <a :href="'/'"  class="side-nav-link">
+          <router-link to="/"  class="side-nav-link">
             <span class="badge bg-success float-end">4</span>
             <i class="uil-home-alt"></i>
             <span> Dashboard </span>
-          </a>
+          </router-link>
         </li>
 
         <li class="side-nav-title side-nav-item">Apps</li>
 
         <li class="side-nav-item">
-          <a :href="'/agromap'"  class="side-nav-link">
+          <router-link to="/agromap"  class="side-nav-link">
             <i class="mdi mdi-earth"></i>
             <span> Карта </span>
-          </a>
+          </router-link>
         </li>
 
         <li class="side-nav-item">
