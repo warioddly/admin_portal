@@ -48,8 +48,5 @@ export default {
 
 <style lang="scss">
 
-.content-page {
-  padding: 0;
-}
 
 </style>

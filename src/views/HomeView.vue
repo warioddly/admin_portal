@@ -1,7 +1,7 @@
 <template>
 
   <div class="container-fluid">
-awd awd
+ awd awda wda wd aw
 <!--    &lt;!&ndash; start page title &ndash;&gt;-->
 <!--    <div class="row">-->
 <!--      <div class="col-12">-->

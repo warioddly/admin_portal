@@ -61,13 +61,19 @@ export default {
       });
 
 
+    },
+
+    condenseSidebar() {
+      document.getElementsByTagName('body')[0].setAttribute('data-leftbar-compact-mode', "condensed");
     }
+
 
   },
 
 
   mounted() {
 
+    this.condenseSidebar();
     this.initLeafletMap();
     this.addPolygonToMap();
     this.handleClickOnMap();
@@ -75,12 +81,13 @@ export default {
   }
 
 }
+
 </script>
 
 
 
 
-<style scoped>
+<style>
 
 
 #agro-map {
@@ -88,6 +95,14 @@ export default {
   height: 100vh;
   width: 100vw;
   z-index: 1;
+}
+
+body {
+  overflow: hidden;
+}
+
+.content-page {
+  padding: 70px 0 0;
 }
 
 </style>
