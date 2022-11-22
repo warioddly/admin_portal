@@ -1,17 +1,39 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="ru">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+
+    <!-- App css -->
+    <link href="css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/app-creative.min.css" rel="stylesheet" type="text/css" id="light-style" />
+    <link href="css/app-creative-dark.min.css" rel="stylesheet" type="text/css" id="dark-style" />
+
+
   </head>
-  <body>
-    <noscript>
+  <body class="loading" data-layout-config='{ "leftSideBarTheme": "light", "layoutBoxed":false, "leftSidebarCondensed": false, "leftSidebarScrollable": false, "darkMode": false, "showRightSidebarOnStart": true }'>
+  <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
+
+
+    <!-- bundle -->
+    <script src="js/vendor.js"></script>
+    <script src="js/app.min.js"></script>
+
+    <!-- third party js -->
+<!--    <script src="js/apexcharts.min.js"></script>-->
+    <script src="js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="js/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- third party js ends -->
+
+<!--    <script src="js/dashboard.js"></script>-->
+
   </body>
 </html>
