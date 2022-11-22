@@ -63,6 +63,7 @@ export default {
 
     },
 
+
     condenseSidebar() {
       document.getElementsByTagName('body')[0].setAttribute('data-leftbar-compact-mode', "condensed");
     }
@@ -88,7 +89,6 @@ export default {
 
 
 <style>
-
 
 #agro-map {
   min-height: 100vh;

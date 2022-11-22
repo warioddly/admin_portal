@@ -2,7 +2,7 @@
   <div class="leftside-menu">
 
     <!-- LOGO -->
-    <a href="#" class="logo text-center logo-light">
+    <a :href="'/'" class="logo text-center logo-light">
       <span class="logo-lg">
           <img src="@/assets/images/logo.png" alt="" height="16">
       </span>
@@ -12,7 +12,7 @@
     </a>
 
     <!-- LOGO -->
-    <a href="/" class="logo text-center logo-dark">
+    <a :href="'/'" class="logo text-center logo-dark">
       <span class="logo-lg">
           <img src="@/assets/images/logo-dark.png" alt="" height="16">
       </span>
@@ -29,35 +29,19 @@
         <li class="side-nav-title side-nav-item">Navigation</li>
 
         <li class="side-nav-item">
-          <a data-bs-toggle="collapse" href="#sidebarDashboards" aria-expanded="false" aria-controls="sidebarDashboards" class="side-nav-link">
-            <i class="uil-home-alt"></i>
+          <a :href="'/'"  class="side-nav-link">
             <span class="badge bg-success float-end">4</span>
-            <span> Dashboards </span>
+            <i class="uil-home-alt"></i>
+            <span> Dashboard </span>
           </a>
-          <div class="collapse" id="sidebarDashboards">
-            <ul class="side-nav-second-level">
-              <li>
-                <a href="#">Analytics</a>
-              </li>
-              <li>
-                <a href="#">CRM</a>
-              </li>
-              <li>
-                <a href="#">Ecommerce</a>
-              </li>
-              <li>
-                <a href="#">Projects</a>
-              </li>
-            </ul>
-          </div>
         </li>
 
         <li class="side-nav-title side-nav-item">Apps</li>
 
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
-            <i class="uil-calender"></i>
-            <span> Calendar </span>
+          <a :href="'/agromap'"  class="side-nav-link">
+            <i class="mdi mdi-earth"></i>
+            <span> Карта </span>
           </a>
         </li>
 
