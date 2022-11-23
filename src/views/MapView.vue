@@ -1,56 +1,107 @@
 <template>
+
   <div id="agro-map"></div>
+
+  <right-sidebar-component></right-sidebar-component>
+
+  <map-sidebar-component :map="map" :toggleFullScreen="fullScreenMap"></map-sidebar-component>
+
 </template>
 
 
 <script>
 
+
+import $ from 'jquery';
+import L from 'leaflet';
+import MiniMap from 'leaflet-minimap';
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
-import L from 'leaflet';
-// eslint-disable-next-line no-unused-vars
-import LD from 'leaflet-draw';
+import '@/assets/plugins/leaflet/fullscreen/Control.FullScreen';
+import 'leaflet-loading/src/Control.Loading.css';
+import 'leaflet-loading/src/Control.Loading.js';
+import 'leaflet-multicontrol';
+import 'leaflet-sidebar-v2';
+import 'leaflet.zoomslider';
+
+
+import RightSidebarComponent from "@/components/map/RightSidebarComponent";
+import MapSidebarComponent from "@/components/map/MapSidebarComponent";
 
 
 export default {
-  name: "MapView",
 
-  components: { },
+  name: "MapView",
+  components: {MapSidebarComponent, RightSidebarComponent },
 
   data() {
     return {
       map: null,
+      layers: [
+
+        L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+          maxZoom: 20,
+          subdomains:['mt0','mt1','mt2','mt3']
+        }),
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          minZoom: 2,
+        }),
+
+        L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+          maxZoom: 20,
+          subdomains:['mt0','mt1','mt2','mt3']
+        }),
+
+        L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+          maxZoom: 20,
+          subdomains:['mt0','mt1','mt2','mt3']
+        }),
+
+      ],
+      sidebar: null,
+      miniMap: false,
     }
   },
-
 
   methods: {
 
     initLeafletMap() {
 
-      this.map = L.map('agro-map', { drawControl: true })
-          .setView([51.505, -0.09], 7)
-          .addLayer(new L.FeatureGroup());
+      this.map = L.map( 'agro-map', {
+            drawControl: true,
+            loadingControl: true,
+            fullscreenControl: true,
+            zoomControl: false,
+            center: [51.505, -0.09],
+            zoom: 7,
+            layers: [
+              this.layers[0],
+              new L.FeatureGroup(),
+             ],
+        });
 
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        minZoom: 2,
-      }).addTo(this.map);
+      new MiniMap(new L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+          }),
+          { toggleDisplay: true, minimized: true }).addTo(this.map);
+
+
+      L.control.zoom({ position: 'bottomright' }).addTo(this.map);
+      L.control.zoomslider({ position: 'bottomright' }).addTo(this.map);
+
 
     },
 
 
-    addPolygonToMap() {
+    handleEventOnMap() {
 
-      // console.log(this.map.getZoom());
-
-    },
-
-
-    handleClickOnMap() {
-
-      // this.map.on('click', (event) => console.log(`${event.latlng}`));
+      // On click map
+      this.map.on('click', (event) => console.log(`${event.latlng}`));
+      this.map.on('click', () => this.sidebar.close('map-sidebar'));
 
       this.map.on('draw:created', function (event) {
 
@@ -61,23 +112,149 @@ export default {
       });
 
 
+      // On toggle minimap
+      $('.leaflet-control-minimap-toggle-display').click(function(event) {
+
+        $(event.currentTarget).css('width', 30).css('height', 30);
+
+        if ($(event.currentTarget).attr('title') === 'Show MiniMap') {
+          $('.leaflet-control-minimap').css('width', 30).css('height', 30);
+        }
+        else {
+          $(event.currentTarget).css('width', 19).css('height', 19);
+        }
+
+
+      });
+
+    },
+
+
+    initMultiControls() {
+
+      const marker = L.marker([51.5, -0.09]).addTo(this.map);
+      const marker2 = L.marker([51.51, -0.09]);
+      const polygon = L.polygon([[51.51, -0.1],[51.5, -0.08],[51.53, -0.07],[51.50, -0.06]], {color: '#FF0000'}).addTo(this.map);
+      const polygon2 = L.polygon([[51.51, -0.1],[51.5, -0.08],[51.53, -0.07],[51.50, -0.06]], {color: '#0122FF'}).addTo(this.map);
+
+      const mylines = [{
+        "type": "LineString",
+        "coordinates": [[-0.1,51.51], [-0.07,51.53]]
+      }, {
+        "type": "LineString",
+        "coordinates": [[-0.1,51.5], [-0.07,51.50]]
+      }];
+      const geojson = L.geoJSON(null).addTo(this.map);
+      geojson.addData(mylines);
+
+      const states = [{
+        "type": "Feature",
+        "properties": {"party": "Republican"},
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-104.05, 48.99],
+            [-97.22,  48.98],
+            [-96.58,  45.94],
+            [-104.03, 45.94],
+            [-104.05, 48.99]
+          ]]
+        }
+      }, {
+        "type": "Feature",
+        "properties": {"party": "Democrat"},
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-109.05, 41.00],
+            [-102.06, 40.99],
+            [-102.03, 36.99],
+            [-109.04, 36.99],
+            [-109.05, 41.00]
+          ]]
+        }
+      }, {
+        "type": "Feature",
+        "properties": {"party": "Democrat"},
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[
+            [-109.05, 41.00],
+            [-102.06, 40.99],
+            [-102.03, 36.99],
+            [-109.04, 36.99],
+            [-109.05, 41.00]
+          ]]
+        }
+      }];
+
+      const geojsonStates = L.geoJSON(states, {style: function(state) {
+          return (state.properties.party === 'Republican')
+              ? {fillColor:'red', color:'red', opacity:1, legendLabel: state.properties.party} : {fillColor:'blue', color:'blue', opacity:1, legendLabel: state.properties.party}
+        }}).addTo(this.map);
+
+
+      const overlays = [
+        {name: 'Marker', layer: marker},
+        {name: 'Marker2', layer: marker2},
+        {name: 'polygon', layer: polygon},
+        {name: 'polygon2', layer: polygon2},
+        {name: 'geojson', layer: geojson},
+        {name: 'geojsonStates', layer: geojsonStates},
+      ];
+
+
+      L.multiControl( overlays, { position:'topright', label: 'Control de capas'} ).addTo(this.map);
+
+    },
+
+
+    initMapSidebar() {
+
+      this.sidebar = L.control.sidebar({
+        autopan: true,
+        closeButton: true,
+        container: 'map-sidebar',
+        position: 'right',
+      }).addTo(this.map);
+
     },
 
 
     condenseSidebar() {
       document.getElementsByTagName('body')[0].setAttribute('data-leftbar-compact-mode', "condensed");
-    }
+    },
 
+
+    fullScreenMap() {
+      this.map.toggleFullscreen();
+
+      setTimeout(this.condenseSidebar, 30);
+    },
+
+
+    clearMap() {
+      $('.leaflet-control-minimap .leaflet-bottom.leaflet-right').remove();
+      $('.leaflet-control-zoom-fullscreen').remove();
+      $('.leaflet-control-zoomslider').hide();
+
+      // $('.leaflet-top.leaflet-left .leaflet-bar.leaflet-control').remove();
+      $('.leaflet-control-minimap').css('width', 30).css('height', 30);
+      $('.leaflet-control-minimap-toggle-display').css('width', 30).css('height', 30);
+    },
 
   },
+
 
 
   mounted() {
 
     this.condenseSidebar();
     this.initLeafletMap();
-    this.addPolygonToMap();
-    this.handleClickOnMap();
+    // this.initMultiControls();
+    this.initMapSidebar();
+    this.handleEventOnMap();
+    this.clearMap();
 
   }
 
@@ -86,23 +263,12 @@ export default {
 </script>
 
 
-
-
-<style>
-
-#agro-map {
-  min-height: 100vh;
-  height: 100vh;
-  width: 100vw;
-  z-index: 1;
-}
-
-body {
-  overflow: hidden;
-}
-
-.content-page {
-  padding: 70px 0 0;
-}
-
+<style lang="scss">
+@import "../assets/scss/agromap";
+@import '../assets/plugins/leaflet/fullscreen/Control.FullScreen.css';
+@import "../assets/plugins/leaflet/zoombar/L.Control.Zoomslider.css";
+@import "../assets/plugins/leaflet/zoombar/L.Control.Zoomslider.ie.css";
+@import "../assets/plugins/leaflet/minimap/Control.MiniMap.min.css";
+@import "../assets/plugins/leaflet/sidebar/leaflet-sidebar.css";
+@import "../../node_modules/leaflet-multicontrol/src/L.multiControl.css";
 </style>

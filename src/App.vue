@@ -23,10 +23,6 @@
 
 
   </div>
-
-  <right-sidebar-component></right-sidebar-component>
-
-
 </template>
 
 
@@ -35,12 +31,17 @@
 import SidebarComponent from "@/components/layouts/SidebarComponent";
 import FooterComponent from "@/components/layouts/FooterComponent";
 import NavbarComponent from "@/components/layouts/NavbarComponent";
-import RightSidebarComponent from "@/components/layouts/RightSidebarComponent";
 
 export default {
 
-  components: {RightSidebarComponent, NavbarComponent, FooterComponent, SidebarComponent },
+  components: { NavbarComponent, FooterComponent, SidebarComponent },
 
+
+  mounted() {
+
+    this.$store.dispatch('theme/setTheme');
+
+  }
 }
 
 </script>

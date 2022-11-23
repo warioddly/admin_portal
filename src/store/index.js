@@ -1,6 +1,5 @@
-
 import { createStore } from 'vuex'
-// import $ from 'jquery';
+import theme from "./theme_module"
 
 
 export default createStore({
@@ -8,5 +7,7 @@ export default createStore({
   getters: { },
   mutations: { },
   actions: { },
-  modules: { }
+  modules: {
+    theme
+  }
 })
