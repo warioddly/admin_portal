@@ -95,6 +95,7 @@ export default {
 
   methods: {
 
+
     initLeafletMap() {
 
       // initial Leaflet map
@@ -111,13 +112,18 @@ export default {
              ],
         });
 
+    },
+
+
+    initControls() {
+
 
       // Embedding Leaflet map CONTROLLs
 
       new MiniMap(new L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-            maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3']
-          }), { toggleDisplay: true, minimized: true }).addTo(this.map);
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+      }), { toggleDisplay: true, minimized: true }).addTo(this.map);
 
 
       this.map.pm.addControls({ position: 'topleft' });
@@ -140,7 +146,12 @@ export default {
           group: "Map Layers",
           layers: this.mapLayers
         }], {}, { className: "map-style-layer-control"}).addTo(this.map);
-
+      this.sidebar = L.control.sidebar({
+        autopan: true,
+        closeButton: true,
+        container: 'map-sidebar',
+        position: 'right',
+      }).addTo(this.map);
       // this.locationController = L.control.locate({
       //     position: "topright",
       //     strings: { title: "Show me where I am, yo!" },
@@ -152,7 +163,6 @@ export default {
       // L.control.ruler({
       //   position: 'topleft',
       // }).addTo(this.map);
-
 
     },
 
@@ -255,18 +265,6 @@ export default {
     },
 
 
-    initMapSidebar() {
-
-      this.sidebar = L.control.sidebar({
-        autopan: true,
-        closeButton: true,
-        container: 'map-sidebar',
-        position: 'right',
-      }).addTo(this.map);
-
-    },
-
-
     condenseSidebar() {
       document.getElementsByTagName('body')[0].setAttribute('data-leftbar-compact-mode', "condensed");
     },
@@ -282,11 +280,6 @@ export default {
     changeMapDesign() {
 
       // Edit Svg Panel
-
-
-      $('.leaflet-styleeditor').change('class', function() {
-        console.log(111);
-      });
 
 
       // ZOOM CONTROLS
@@ -337,8 +330,7 @@ export default {
     // INITIAL
     this.condenseSidebar();
     this.initLeafletMap();
-    // this.initMultiControls();
-    this.initMapSidebar();
+    this.initControls();
 
     // EVENTS
     this.layerEditEvents();
