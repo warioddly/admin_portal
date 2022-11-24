@@ -11,7 +11,6 @@
 
 <script>
 
-
 import $ from 'jquery';
 import L from 'leaflet';
 import MiniMap from 'leaflet-minimap';
@@ -23,11 +22,23 @@ import 'leaflet-loading/src/Control.Loading.js';
 import 'leaflet-multicontrol';
 import 'leaflet-sidebar-v2';
 import 'leaflet.zoomslider';
+import 'leaflet-draw';
+import 'leaflet-measure';
+import 'leaflet-styleeditor';
+import 'leaflet-ruler';
+import 'leaflet-ruler/src/leaflet-ruler.css';
+import 'leaflet.locatecontrol/src/L.Control.Locate';
+import 'leaflet.locatecontrol/src/L.Control.Locate.scss';
+import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css';
+import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min';
+import 'leaflet-measure/dist/leaflet-measure.css';
+import '@geoman-io/leaflet-geoman-free';
+import "../assets/plugins/leaflet/leaflet-measure-path/leaflet-measure-path";
+import "../assets/plugins/leaflet/panel-layers/panel-layers";
 
 
 import RightSidebarComponent from "@/components/map/RightSidebarComponent";
 import MapSidebarComponent from "@/components/map/MapSidebarComponent";
-
 
 export default {
 
@@ -37,31 +48,48 @@ export default {
   data() {
     return {
       map: null,
-      layers: [
-
-        L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-          maxZoom: 20,
-          subdomains:['mt0','mt1','mt2','mt3']
-        }),
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          minZoom: 2,
-        }),
-
-        L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-          maxZoom: 20,
-          subdomains:['mt0','mt1','mt2','mt3']
-        }),
-
-        L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
-          maxZoom: 20,
-          subdomains:['mt0','mt1','mt2','mt3']
-        }),
-
+      mapLayers: [
+        {
+          name: "Google Satellite",
+          layer: L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+          }),
+          active: true,
+        },
+        {
+          name: "Google Hybrid",
+          layer: L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+          }),
+        },
+        {
+          name: "Google Streets",
+          layer: L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+          }),
+        },
+        {
+          name: "Google Terrain",
+          layer: L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+          }),
+        },
+        {
+          name: "Open Street Map",
+          layer: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            minZoom: 2,
+          }),
+        },
       ],
       sidebar: null,
       miniMap: false,
+      editableLayers: new L.FeatureGroup(),
+      locationController: null,
     }
   },
 
@@ -69,29 +97,61 @@ export default {
 
     initLeafletMap() {
 
+      // initial Leaflet map
       this.map = L.map( 'agro-map', {
             drawControl: true,
-            loadingControl: true,
+            loadingControl: false,
             fullscreenControl: true,
             zoomControl: false,
+            measureControl: true,
             center: [51.505, -0.09],
             zoom: 7,
             layers: [
-              this.layers[0],
-              new L.FeatureGroup(),
+              this.editableLayers
              ],
         });
 
 
+      // Embedding Leaflet map CONTROLLs
+
       new MiniMap(new L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
-          }),
-          { toggleDisplay: true, minimized: true }).addTo(this.map);
+          }), { toggleDisplay: true, minimized: true }).addTo(this.map);
 
+
+      this.map.pm.addControls({ position: 'topleft' });
+
+      L.control.styleEditor({
+        position: 'topleft',
+        markers: ['circle-stroked', 'circle', 'square-stroked', 'square']
+      }).addTo(this.map);
 
       L.control.zoom({ position: 'bottomright' }).addTo(this.map);
       L.control.zoomslider({ position: 'bottomright' }).addTo(this.map);
+      L.control.coordinates({
+        position: "bottomleft",
+        enableUserInput: false,
+        useDMS: false,
+        useLatLngOrder: true,
+      }).addTo(this.map);
+      L.control.panelLayers([
+        {
+          group: "Map Layers",
+          layers: this.mapLayers
+        }], {}, { className: "map-style-layer-control"}).addTo(this.map);
+
+      // this.locationController = L.control.locate({
+      //     position: "topright",
+      //     strings: { title: "Show me where I am, yo!" },
+      //     drawCircle: false,
+      //     locateOptions: {
+      //       enableHighAccuracy: true
+      //     }
+      //   }).addTo(this.map);
+      // L.control.ruler({
+      //   position: 'topleft',
+      // }).addTo(this.map);
 
 
     },
@@ -99,33 +159,19 @@ export default {
 
     handleEventOnMap() {
 
-      // On click map
-      this.map.on('click', (event) => console.log(`${event.latlng}`));
+      // this.map.on('click', (event) => console.log(`${event.latlng}`));
       this.map.on('click', () => this.sidebar.close('map-sidebar'));
 
-      this.map.on('draw:created', function (event) {
-
-        var shape_for_db = JSON.stringify(event.layer.toGeoJSON());
-
-        console.log(`shape_for_db ${shape_for_db}`);
-
-      });
+    },
 
 
-      // On toggle minimap
-      $('.leaflet-control-minimap-toggle-display').click(function(event) {
+    layerEditEvents() {
 
-        $(event.currentTarget).css('width', 30).css('height', 30);
+      this.map.on('draw:created', (event) => this.editableLayers.addLayer(event.layer));
 
-        if ($(event.currentTarget).attr('title') === 'Show MiniMap') {
-          $('.leaflet-control-minimap').css('width', 30).css('height', 30);
-        }
-        else {
-          $(event.currentTarget).css('width', 19).css('height', 19);
-        }
+      this.map.on('pm:create', (event) => this.editableLayers.addLayer(event.layer));
 
-
-      });
+      this.map.on('pm:change', (event) => this.editableLayers.addLayer(event.layer));
 
     },
 
@@ -233,28 +279,73 @@ export default {
     },
 
 
-    clearMap() {
-      $('.leaflet-control-minimap .leaflet-bottom.leaflet-right').remove();
+    changeMapDesign() {
+
+      // Edit Svg Panel
+
+
+      $('.leaflet-styleeditor').change('class', function() {
+        console.log(111);
+      });
+
+
+      // ZOOM CONTROLS
       $('.leaflet-control-zoom-fullscreen').remove();
       $('.leaflet-control-zoomslider').hide();
 
-      // $('.leaflet-top.leaflet-left .leaflet-bar.leaflet-control').remove();
+
+      // EDIT LAYER
+
+      $('.leaflet-draw').hide();
+      $('.leaflet-pm-toolbar').hide();
+      $('.leaflet-control-styleeditor').hide();
+
+
+      // Map Layer Control
+
+      $('.map-style-layer-control').hide();
+
+
+      // MINIMAP
+
+      let miniMapRef = $('.leaflet-control-minimap-toggle-display');
+
+      miniMapRef.click(function(event) {
+
+        $(event.currentTarget).css('width', 30).css('height', 30);
+
+        if ($(event.currentTarget).attr('title') === 'Show MiniMap') {
+          $('.leaflet-control-minimap').css('width', 30).css('height', 30);
+        }
+        else {
+          $(event.currentTarget).css('width', 19).css('height', 19);
+        }
+
+
+      });
+
+      $('.leaflet-control-minimap .leaflet-bottom.leaflet-right').remove();
+
       $('.leaflet-control-minimap').css('width', 30).css('height', 30);
-      $('.leaflet-control-minimap-toggle-display').css('width', 30).css('height', 30);
+      miniMapRef.css('width', 30).css('height', 30);
     },
 
   },
 
-
-
   mounted() {
 
+    // INITIAL
     this.condenseSidebar();
     this.initLeafletMap();
     // this.initMultiControls();
     this.initMapSidebar();
+
+    // EVENTS
+    this.layerEditEvents();
     this.handleEventOnMap();
-    this.clearMap();
+
+    // OTHERS
+    this.changeMapDesign();
 
   }
 
@@ -270,5 +361,7 @@ export default {
 @import "../assets/plugins/leaflet/zoombar/L.Control.Zoomslider.ie.css";
 @import "../assets/plugins/leaflet/minimap/Control.MiniMap.min.css";
 @import "../assets/plugins/leaflet/sidebar/leaflet-sidebar.css";
+@import "../assets/plugins/leaflet/leaflet-measure-path/leaflet-measure-path.css";
 @import "../../node_modules/leaflet-multicontrol/src/L.multiControl.css";
+@import "../../node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 </style>

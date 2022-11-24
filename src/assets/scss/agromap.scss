@@ -1,52 +1,39 @@
 @import "constants";
 
 body {
+
   overflow: hidden;
 
-  .content-page {
-    padding: 70px 0 0;
-  }
+
+  .content-page { padding: 70px 0 0; }
+
 
   #agro-map {
+
     min-height: calc(100vh - 70px);
     z-index: 1;
 
 
-    .leaflet-control-zoom {
-      //top: 40vh;
+    //#map-sidebar {
+    //  overflow: initial;
+    //  border: none;
+    //
+    //  .leaflet-sidebar-tabs {
+    //    border: 2px solid rgba(0, 0, 0, 0.2);
+    //    border-radius: 4px;
+    //  }
+    //}
+
+
+    .leaflet-control-layers, .leaflet-control-zoom {
       border: none;
     }
 
-  }
 
-
-}
-
-#zoom-controls {
-
-  position: absolute;
-  left: 0;
-  top: 50vh;
-  z-index: 222;
-  display: flex;
-  flex-direction: column;
-  margin: 0 10px;
-  border-radius: 8px;
-
-  #zoom-in, #zoom-out {
-    background-color: white;
-    padding: 8px;
-    cursor: pointer;
-
-
-    &:hover {
-      background-color: green;
+    .map-style-layer-control {
+      //display: none;
     }
-
-    i.mdi {
-      font-size: 21px;
-    }
-
   }
 
 }
+
