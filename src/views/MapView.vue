@@ -19,12 +19,12 @@ import "leaflet-draw/dist/leaflet.draw.css";
 import '@/assets/plugins/leaflet/fullscreen/Control.FullScreen';
 import 'leaflet-loading/src/Control.Loading.css';
 import 'leaflet-loading/src/Control.Loading.js';
-import 'leaflet-multicontrol';
 import 'leaflet-sidebar-v2';
 import 'leaflet.zoomslider';
 import 'leaflet-draw';
 import 'leaflet-measure';
 import 'leaflet-styleeditor';
+import 'leaflet-multicontrol';
 import 'leaflet-ruler';
 import 'leaflet-ruler/src/leaflet-ruler.css';
 import 'leaflet.locatecontrol/src/L.Control.Locate';
@@ -35,7 +35,6 @@ import 'leaflet-measure/dist/leaflet-measure.css';
 import '@geoman-io/leaflet-geoman-free';
 import "../assets/plugins/leaflet/leaflet-measure-path/leaflet-measure-path";
 import "../assets/plugins/leaflet/panel-layers/panel-layers";
-
 
 import RightSidebarComponent from "@/components/map/RightSidebarComponent";
 import MapSidebarComponent from "@/components/map/MapSidebarComponent";
@@ -130,7 +129,6 @@ export default {
 
       L.control.styleEditor({
         position: 'topleft',
-        markers: ['circle-stroked', 'circle', 'square-stroked', 'square']
       }).addTo(this.map);
 
       L.control.zoom({ position: 'bottomright' }).addTo(this.map);
@@ -152,6 +150,7 @@ export default {
         container: 'map-sidebar',
         position: 'right',
       }).addTo(this.map);
+
       // this.locationController = L.control.locate({
       //     position: "topright",
       //     strings: { title: "Show me where I am, yo!" },
@@ -180,8 +179,10 @@ export default {
       this.map.on('draw:created', (event) => this.editableLayers.addLayer(event.layer));
 
       this.map.on('pm:create', (event) => this.editableLayers.addLayer(event.layer));
-
       this.map.on('pm:change', (event) => this.editableLayers.addLayer(event.layer));
+
+      this.map.on('styleeditor:visible', (event) => $('#map-sidebar').animate({right: -40}, 0));
+      this.map.on('styleeditor:hidden', (event) => $('#map-sidebar').animate({right: 5}, 0));
 
     },
 
@@ -260,13 +261,8 @@ export default {
       ];
 
 
-      L.multiControl( overlays, { position:'topright', label: 'Control de capas'} ).addTo(this.map);
+      L.multiControl( overlays, { position:'topright', label: 'Control de capas' } ).addTo(this.map);
 
-    },
-
-
-    condenseSidebar() {
-      document.getElementsByTagName('body')[0].setAttribute('data-leftbar-compact-mode', "condensed");
     },
 
 
@@ -327,10 +323,12 @@ export default {
 
   mounted() {
 
+    document.getElementsByTagName('body')[0].setAttribute('data-leftbar-compact-mode', "condensed");
+
     // INITIAL
-    this.condenseSidebar();
     this.initLeafletMap();
     this.initControls();
+    this.initMultiControls();
 
     // EVENTS
     this.layerEditEvents();
