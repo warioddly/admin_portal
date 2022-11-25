@@ -1,3 +1,5 @@
+import * as L from "leaflet";
+
 !(function() {
     'use strict';
 
@@ -86,8 +88,8 @@
     }
 
     var formatArea = function(a) {
-        var unit,
-            sqfeet;
+        var unit
+            // sqfeet;
 
         if (this._measurementOptions.imperial) {
             if (a > 404.685642) {

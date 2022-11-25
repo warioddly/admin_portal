@@ -1,4 +1,5 @@
 <template>
+
   <div id="map-sidebar" class="leaflet-sidebar collapsed">
 
     <div class="leaflet-sidebar-tabs">
@@ -67,7 +68,7 @@
         <hr />
 
         <div class="d-flex flex-wrap justify-content-evenly">
-          <div v-for="item in layers">
+          <div v-for="item in layers" :key="item.id">
 
             <div class="mb-2 map-layer-item" :data-id="item.id">
               <img :src="item.image" class="rounded" :alt="item.name">
@@ -96,7 +97,7 @@ import MapLayerListComponent from "@/components/map/MapLayerListComponent";
 export default {
   name: "MapSidebarComponent",
   components: {MapLayerListComponent},
-  props: ['map', 'toggleFullScreen'],
+  props: ['map'],
 
 
   data() {
@@ -158,8 +159,10 @@ export default {
 
 
     _toggleFullScreen() {
+
       this.fullScreenMap = !this.fullScreenMap;
-      this.toggleFullScreen();
+      this.map.toFullscreen();
+
     },
 
 
@@ -219,8 +222,7 @@ export default {
 
 
     changeLayer(event) {
-      $('.leaflet-panel-layers-item .leaflet-panel-layers-title')
-          [parseInt( $(event.currentTarget).data('id'))].click();
+      $('.leaflet-panel-layers-item .leaflet-panel-layers-title')[parseInt( $(event.currentTarget).data('id'))].click();
     },
 
   },

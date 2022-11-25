@@ -9,7 +9,7 @@
       <h5 class="mt-3 ">List</h5>
 
       <div class="d-flex flex-wrap justify-content-between">
-        <div v-for="item in layers">
+        <div v-for="item in layers" :key="item.id">
 
           <div class="mb-2 map-layer-item" :data-id="item.id">
             <img :src="item.image" class="rounded" :alt="item.name">
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+
+import $ from 'jquery';
 
 export default {
 
@@ -68,8 +70,7 @@ export default {
   methods: {
 
     changeLayer(event) {
-      $('.leaflet-panel-layers-item .leaflet-panel-layers-title')
-          [parseInt( $(event.currentTarget).data('id'))].click();
+      $('.leaflet-panel-layers-item .leaflet-panel-layers-title')[parseInt($(event.currentTarget).data('id'))].click();
     },
 
   },

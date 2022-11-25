@@ -1,5 +1,7 @@
+/* eslint-disable no-prototype-builtins, no-unused-vars */
 
 (function (factory) {
+    let define;
     if (typeof define === 'function' && define.amd) {
         //AMD
         define(['leaflet'], factory);
